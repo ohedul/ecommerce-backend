@@ -41,9 +41,9 @@ public class ItemController {
 		return service.getAllItems();
 
 	}
-	
-	@GetMapping(value="/delete/{itemId}")
-	public List<Items> deleteItem(@PathVariable("itemId")Long itemId) {
+
+	@GetMapping(value = "/delete/{itemId}")
+	public List<Items> deleteItem(@PathVariable("itemId") Long itemId) {
 		return service.deleteItems(itemId);
 
 	}

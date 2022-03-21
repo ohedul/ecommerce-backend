@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import bd.ohedul.erp.dto.CartDto;
 import bd.ohedul.erp.dto.OrderDto;
 import bd.ohedul.erp.dto.OrderItemDto;
 import bd.ohedul.erp.model.Buyer;
@@ -25,29 +24,29 @@ public class CartService {
 	private CartRepository cartRepository;
 	@Autowired
 	private CartItemRepository cartItemRepository;
-	
+
 	@Autowired
 	private BuyerRepository buyerRepository;
 	@Autowired
 	private ItemRepository itemRepository;
-	
-	public Long addCart(List<CartDto> cartDtos, Long userId) {
+
+	public Long addCart(List<int[]> cartDtos, Long userId) {
 		try {
 			Optional<Buyer> buyer = buyerRepository.findById(userId);
 			Cart cart = new Cart();
 			cart.setBuyer(buyer.get());
 			Double totalAmount = 0.0;
 			List<CartItem> cartItems = new ArrayList<>();
-			
-			for(CartDto cartDto: cartDtos) {
-				Long itemId = cartDto.getItemId();
-				Integer quantity = cartDto.getQuantity();
-				
+
+			for (int[] value : cartDtos) {
+				Long itemId = Long.valueOf(value[0]);
+				Integer quantity = value[1];
+
 				Optional<Items> item = itemRepository.findById(itemId);
 				Items items = item.get();
 				Double price = items.getPrice();
-				Double subTotal = price*quantity;
-				totalAmount+= subTotal;
+				Double subTotal = price * quantity;
+				totalAmount += subTotal;
 				CartItem cartItem = new CartItem();
 				cartItem.setQuantity(quantity);
 				cartItem.setSubTotal(subTotal);
@@ -57,29 +56,29 @@ public class CartService {
 			cart.setDelivered(false);
 			cart.setTotalAmount(totalAmount);
 			cartRepository.save(cart);
-			for(CartItem item: cartItems) {
+			for (CartItem item : cartItems) {
 				item.setCart(cart);
 				cartItemRepository.save(item);
 			}
 			return cart.getOrderId();
-			
-		}catch(NumberFormatException e){
+
+		} catch (NumberFormatException e) {
 			return 0L;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			return 0L;
 		}
-		
+
 	}
-	
-	public List<OrderDto> getAllOrders(){
+
+	public List<OrderDto> getAllOrders() {
 		List<OrderDto> orders = new ArrayList<>();
-		for(Cart cart: cartRepository.findAll()) {
+		for (Cart cart : cartRepository.findAll()) {
 			OrderDto dto = new OrderDto();
 			dto.setOrderId(cart.getOrderId());
 			dto.setBuyerEmail(cart.getBuyer().getEmail());
 			dto.setTotalamount(cart.getTotalAmount());
 			List<OrderItemDto> orderItems = new ArrayList<>();
-			cartItemRepository.findAllByCart(cart).forEach(cartItem ->{
+			cartItemRepository.findAllByCart(cart).forEach(cartItem -> {
 				OrderItemDto itemDto = new OrderItemDto();
 				itemDto.setOrderItemId(cartItem.getId());
 				itemDto.setItemId(cartItem.getItem().getItemId());
@@ -94,13 +93,36 @@ public class CartService {
 		}
 		return orders;
 	}
-	
+
+	public List<OrderDto> getAllOrdersByCustomer(Long userId) {
+		List<OrderDto> orders = new ArrayList<>();
+		List<Cart> carts = cartRepository.findByBuyerUserId(userId);
+		for (Cart cart : carts) {
+			OrderDto dto = new OrderDto();
+			dto.setOrderId(cart.getOrderId());
+			dto.setBuyerEmail(cart.getBuyer().getEmail());
+			dto.setTotalamount(cart.getTotalAmount());
+			List<OrderItemDto> orderItems = new ArrayList<>();
+			cartItemRepository.findAllByCart(cart).forEach(cartItem -> {
+				OrderItemDto itemDto = new OrderItemDto();
+				itemDto.setOrderItemId(cartItem.getId());
+				itemDto.setItemId(cartItem.getItem().getItemId());
+				itemDto.setItemName(cartItem.getItem().getName());
+				itemDto.setPrice(cartItem.getItem().getPrice());
+				itemDto.setQuantity(cartItem.getQuantity());
+				itemDto.setSubTotal(cartItem.getSubTotal());
+				orderItems.add(itemDto);
+			});
+			dto.setOrderItems(orderItems);
+			orders.add(dto);
+		}
+		return orders;
+	}
+
 	public void accept(Long id) {
 		Cart cart = cartRepository.getById(id);
 		cart.setDelivered(true);
 		cartRepository.saveAndFlush(cart);
 	}
-	
-	
 
 }
