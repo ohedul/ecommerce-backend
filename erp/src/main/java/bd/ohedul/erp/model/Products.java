@@ -12,13 +12,10 @@ import lombok.Data;
  * @author ohedul
  *
  */
-@Data
 @Entity
-@Table(name = "products")
 public class Products {
-
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
 	private String itemCode;

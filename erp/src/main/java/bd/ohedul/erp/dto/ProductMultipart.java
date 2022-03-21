@@ -1,4 +1,4 @@
-package bd.ohedul.erp.model;
+package bd.ohedul.erp.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 

@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import bd.ohedul.erp.dto.ProductMultipart;
 import bd.ohedul.erp.model.Items;
-import bd.ohedul.erp.model.ProductMultipart;
 import bd.ohedul.erp.model.Products;
 import bd.ohedul.erp.repository.ItemRepository;
 

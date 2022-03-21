@@ -1,4 +1,6 @@
-package bd.ohedul.erp.model;
+package bd.ohedul.erp.dto;
+
+import bd.ohedul.erp.model.Items;
 
 public class OrderDetailsModel {
 	

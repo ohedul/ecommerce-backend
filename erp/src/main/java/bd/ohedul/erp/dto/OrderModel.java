@@ -1,6 +1,8 @@
-package bd.ohedul.erp.model;
+package bd.ohedul.erp.dto;
 
 import java.util.List;
+
+import bd.ohedul.erp.model.Buyer;
 
 public class OrderModel {
 	

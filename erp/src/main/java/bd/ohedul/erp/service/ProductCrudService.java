@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import antlr.StringUtils;
-import bd.ohedul.erp.model.ProductMultipart;
+import bd.ohedul.erp.dto.ProductMultipart;
 import bd.ohedul.erp.model.Products;
 import bd.ohedul.erp.repository.ProductRepository;
 
